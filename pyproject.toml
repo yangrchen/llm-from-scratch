@@ -7,7 +7,10 @@ authors = [
     { name = "Yang Chen", email = "yangrc.chen@gmail.com" }
 ]
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "tiktoken>=0.14.0",
+    "transformers>=5.21.0",
+]
 
 [project.scripts]
 llm-from-scratch = "llm_from_scratch:main"

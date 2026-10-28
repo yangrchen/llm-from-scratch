@@ -1,7 +1,11 @@
 import re
 from pathlib import Path
 
-from llm_from_scratch.tokenize.simple import SimpleTokenizerV1
+from llm_from_scratch.tokenize.simple import (
+    BasicBPE,
+    SimpleTokenizerV1,
+    SimpleTokenizerV2,
+)
 
 ROOT = Path(__file__).resolve().parents[3]
 DATA_FOLDER = ROOT / "data"
@@ -48,6 +52,29 @@ if __name__ == "__main__":
     text = """"It's the last he painted, you know,"
             Mrs. Gisburn said with pardonable pride."""
     ids = tokenizer.encode(text)
-    print(ids)
+    # print(ids)
+    # print(tokenizer.decode(ids))
 
+    all_tokens = sorted(set(preprocessed))
+    all_tokens.extend(["<|endoftext|>", "<|unk|>"])
+    vocab = {token: integer for integer, token in enumerate(all_tokens)}
 
+    # print(len(vocab.items()))
+
+    # for i, item in enumerate(list(vocab.items())[-5:]):
+    #    print(item)
+
+    text1 = "Hello, do you like tea?"
+    text2 = "In the sunlit terraces of the palace."
+    text = f" {text1} <|endoftext|> {text2}"
+    # print(text)
+
+    # Using the new simple tokenizer with unknown token support
+    tokenizer = SimpleTokenizerV2(vocab)
+    print(tokenizer.encode(text))
+    print(tokenizer.decode(tokenizer.encode(text)))
+
+    # Using the basic MinBPE implementation
+    tokenizer = BasicBPE()
+    tokenizer.train(raw_text, 400, verbose=True)
+    print(tokenizer.decode(tokenizer.encode(text1)))
